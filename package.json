@@ -12,7 +12,7 @@
     "read sms",
     "android sms"
   ],
-  "author": "Abhishek Jain",
+  "author": "Ravinder Singh",
   "license": "MIT",
   "peerDependencies": {
     "react-native": "^0.74.1"
@@ -20,5 +20,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ravinderz/react-native-expo-read-sms.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
