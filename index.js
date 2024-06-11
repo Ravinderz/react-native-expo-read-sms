@@ -62,16 +62,43 @@ export const checkIfHasSMSPermission = async () => {
 export async function requestReadSMSPermission() {
   if (Platform.OS === "android") {
     const hasPermission = await checkIfHasSMSPermission();
-    if (hasPermission.hasReadSmsPermission && hasPermission.hasReceiveSmsPermission) return true;
-    const status = await PermissionsAndroid.requestMultiple([
-      PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
+    if (
+      hasPermission.hasReadSmsPermission &&
+      hasPermission.hasReceiveSmsPermission
+    )
+      return true;
+    const readGranted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.READ_SMS,
-    ]);
-    if (status === PermissionsAndroid.RESULTS.GRANTED) return true;
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
-      console.log("Read Sms permission denied by user.", status);
+      {
+        title: "SMS Read Permission",
+        message: "This app needs access to your Read SMS messages",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK",
+      }
+    );
+    const receiveGranted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
+      {
+        title: "SMS Receive Permission",
+        message: "This app needs access to your Receive SMS messages",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK",
+      }
+    );
+    if (
+      readGranted === PermissionsAndroid.RESULTS.GRANTED &&
+      receiveGranted === PermissionsAndroid.RESULTS.GRANTED
+    ) {
+      return true;
+    } else if (
+      readGranted === PermissionsAndroid.RESULTS.DENIED ||
+      receiveGranted === PermissionsAndroid.RESULTS.DENIED
+    ) {
+      console.log("Read Sms permission denied by user.");
     } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      console.log("Read Sms permission revoked by user.", status);
+      console.log("Read Sms permission revoked by user.");
     }
     return false;
   }
